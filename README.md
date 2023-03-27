@@ -66,7 +66,7 @@ class ResourceLimits:
     # rttime: int = 2  # RLIMIT_RTTIME, Timeout for real-time tasks.
 ```
 
-## API properties:
+## API endpoints:
 
 ### API to execute code:
 
