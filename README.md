@@ -127,6 +127,10 @@ class JobData:
 ]
 ```
 
+## Evaluation
+
+### pass@k
+
 Check the `eval_scripts` directory. The dependencies are mentioned in `requirements.txt`. Run `pip install -r eval_scripts/requirements.txt`. The entry point is through `eval_passk.py`. Run `python eval_scripts/eval_passk.py --help` for description of arguments.
 
 #### Example of most typical usage:
