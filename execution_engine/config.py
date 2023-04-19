@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from helper import has_nested_dataclass
+from resource_limit import ResourceLimits
 from yaml import safe_load
 
 
@@ -57,6 +58,15 @@ def load_config(config_file: Path) -> Config:
         cfg = Config(**safe_load(f))
 
     return cfg
+
+
+def load_limits_by_lang(limits_by_lang_file: Path) -> dict[str, ResourceLimits]:
+    limits_by_lang = dict()
+    with open(limits_by_lang_file) as lblp:
+        for lang, limits_dict in safe_load(lblp).items():
+            limits_by_lang[lang] = ResourceLimits(**limits_dict)
+
+    return limits_by_lang
 
 
 if __name__ == "__main__":

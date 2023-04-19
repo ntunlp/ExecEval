@@ -5,19 +5,22 @@ import time
 import traceback
 from pathlib import Path
 
-from config import load_config
+from config import load_config, load_limits_by_lang
 from exec_outcome import ExecOutcome
 from flask import Flask, request
 from flask_cors import CORS
 from job import JobData
 
 sys.path.extend([str(Path(__file__).parent)])
+
 from execution_engine import ExecutionEngine
 
 app = Flask(__name__)
 CORS(app)
 config_path = Path("config.yaml")
 cfg = load_config(config_path)
+limits_by_lang_path = Path("limits_by_lang.yaml")
+limits_by_lang = load_limits_by_lang(limits_by_lang_path)
 
 gunicorn_logger = logging.getLogger("gunicorn.error")
 app.logger.handlers = gunicorn_logger.handlers
@@ -44,7 +47,7 @@ with open(worker_cfg_db, "w") as db_wp:
     for line in cfg_db_lines:
         db_wp.write(line + "\n")
 
-execution_engine = ExecutionEngine(cfg, run_ids, app.logger)
+execution_engine = ExecutionEngine(cfg, limits_by_lang, run_ids, app.logger)
 app.config["execution_engine"] = execution_engine
 execution_engine.start()
 

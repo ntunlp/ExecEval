@@ -13,6 +13,7 @@ from exec_outcome import ExecOutcome
 from helper import convert_crlf_to_lf
 from job import JobData, LanguageError
 from prlimit import get_prlimit_str
+from resource_limit import ResourceLimits
 from runtime import Runtime
 from seccomp_filter import make_filter
 
@@ -70,7 +71,13 @@ def init_validate_outputs():
 
 
 class ExecutionEngine:
-    def __init__(self, cfg: Config, run_ids: tuple[int, int], logger) -> None:
+    def __init__(
+        self,
+        cfg: Config,
+        limits_by_lang: dict[str, ResourceLimits],
+        run_ids: tuple[int, int],
+        logger,
+    ) -> None:
         self.code_store = CodeStore(cfg.code_store, run_ids)
         self.supported_languages = dict()
         self.output_validator = init_validate_outputs()
@@ -81,6 +88,7 @@ class ExecutionEngine:
         self.run_gid = run_ids[0]
         self.socket_filter = make_filter(["socket"])
         self.logger = logger
+        self.limits_by_lang = limits_by_lang
 
         self.exec_env = os.environ.copy()
         self.exec_env["GOCACHE"] = str(self.code_store._source_dir.resolve())
@@ -173,6 +181,7 @@ class ExecutionEngine:
 
         if limits is None:
             limits = ResourceLimits()
+            limits.update(self.limits_by_lang[job.language])
 
         # executor = f"timeout -k {limits.cpu} -s 9 {limits.cpu * timelimit_factor + 0.5} {get_prlimit_str(limits)} {executor}"
         executor = f"{get_prlimit_str(limits)} {executor}"
