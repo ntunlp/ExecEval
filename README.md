@@ -2,6 +2,20 @@
 
 A distributed, extensible, secure solution for evaluating machine generated code with unit tests in multiple programming languages.
 
+This repository is a part of our ongoing effort to build large scale execution based evaluation benchmark published as [xCodeEval: A Large Scale Multilingual Multitask Benchmark for Code Understanding, Generation, Translation and Retrieval](https://arxiv.org/abs/2303.03004). If you are using this tool, plesae consider citing the paper.
+
+```
+@misc{khan2023xcodeeval,
+      title={xCodeEval: A Large Scale Multilingual Multitask Benchmark for Code Understanding, Generation, Translation and Retrieval}, 
+      author={Mohammad Abdullah Matin Khan and M Saiful Bari and Xuan Long Do and Weishi Wang and Md Rizwan Parvez and Shafiq Joty},
+      year={2023},
+      eprint={2303.03004},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
+```
+
+
 ## Dependencies:
 
 -   [docker-ce](https://docs.docker.com/engine/install/)
@@ -9,7 +23,7 @@ A distributed, extensible, secure solution for evaluating machine generated code
 ## Steps (Assuming dependencies satisfied):
 
 1. Clone this [ExecEval repository](https://github.com/ntunlp/ExecEval).
-2. `cd $(pwd)/ExecEval`
+2. `cd ExecEval`
 3. `docker build . -t exec-eval:1.0`
 4. `docker run -it -p x:y -e NUM_WORKERS=67 exec-eval:1.0`. This will expose port `y` (default `5000`) as `http://localhost:y` on the local machine whereas port `x` is used within the docker container which can be set by environment variable `GUNICORN_PORT`. The `NUM_WORKERS` is an environment variable representing the number of parallel execution engine workers. It is recommended to not use all cpus, as if cpu goes into 100% load it might affect execution speed of the codes uncontrollably, and keeping some cpus free for evaluation script.
 
@@ -66,7 +80,7 @@ class ResourceLimits:
     # rttime: int = 2  # RLIMIT_RTTIME, Timeout for real-time tasks.
 ```
 
-## API properties:
+## API endpoints:
 
 ### API to execute code:
 
@@ -126,6 +140,10 @@ class JobData:
 	// etc.
 ]
 ```
+
+## Evaluation
+
+### pass@k
 
 Check the `eval_scripts` directory. The dependencies are mentioned in `requirements.txt`. Run `pip install -r eval_scripts/requirements.txt`. The entry point is through `eval_passk.py`. Run `python eval_scripts/eval_passk.py --help` for description of arguments.
 
