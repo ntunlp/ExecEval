@@ -25,7 +25,7 @@ This repository is a part of our ongoing effort to build large scale execution b
 1. Clone this [ExecEval repository](https://github.com/ntunlp/ExecEval).
 2. `cd ExecEval`
 3. `docker build . -t exec-eval:1.0`
-4. `docker run -it -p x:y -e NUM_WORKERS=67 exec-eval:1.0`. This will expose port `y` (default `5000`) as `http://localhost:y` on the local machine whereas port `x` is used within the docker container which can be set by environment variable `GUNICORN_PORT`. The `NUM_WORKERS` is an environment variable representing the number of parallel execution engine workers. It is recommended to not use all cpus, as if cpu goes into 100% load it might affect execution speed of the codes uncontrollably, and keeping some cpus free for evaluation script.
+4. `docker run -it -p x:y -e NUM_WORKERS=67 exec-eval:1.0`. This will expose port `y` (default `5000`) as `http://localhost:y` on the local machine whereas port `x` is used within the docker container which can be set by environment variable `GUNICORN_PORT`. The `NUM_WORKERS` is an environment variable representing the number of parallel execution engine workers. It is recommended to not use all cpus, as if cpu goes into 100% load it might affect execution speed of the codes uncontrollably, and keeping some cpus free for evaluation script. A valid example assuming less cpus available: `docker run -it -p 5000:5000 -e NUM_WORKERS=5 exec-eval:1.0`
 
 ### Expected outcome:
 
