@@ -2,14 +2,14 @@ from dataclasses import dataclass, field
 
 import requests
 from exec_outcome import ExecOutcome
-
+from typing import List, Optional, Union, Tuple
 
 @dataclass
 class ExtendedUnittest:
     input: str
-    output: list[str] = field(default_factory=list)
-    result: str | None = None
-    exec_outcome: ExecOutcome | None = None
+    output: List[str] = field(default_factory=list)
+    result: Optional[str] = None
+    exec_outcome: Optional[ExecOutcome] = None
 
     def json(self):
         _json = self.__dict__
@@ -66,18 +66,18 @@ class APICommunication:
         self,
         language: str,
         source_code: str,
-        unittests: list[dict],
-        limits: dict | None,
+        unittests: List[dict],
+        limits: Optional[dict],
         block_network: bool = True,
         stop_on_first_fail: bool = True,
         use_sanitizer: bool = False,
-        compiler_program_name: str | None = None,
-        compiler_flags: str | None = None,
-        interpreter_cmd: str | None = None,
-        interpreter_flags: str | None = None,
-        sample_id: int | None = None,
-        task_id: str | int | None = None,
-    ) -> tuple[list[ExtendedUnittest], int | None, str | int | None]:
+        compiler_program_name: Optional[str] = None,
+        compiler_flags: Optional[str] = None,
+        interpreter_cmd: Optional[str] = None,
+        interpreter_flags: Optional[str] = None,
+        sample_id: Optional[int] = None,
+        task_id: Union[str, int, None] = None,
+    ) -> Tuple[List[ExtendedUnittest], Optional[int], Union[str, int, None]]:
         if language is None:
             raise EmptyLanguageError
 
