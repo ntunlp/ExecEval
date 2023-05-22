@@ -20,6 +20,7 @@ RUN apt-get update && \
     apt-get install -y software-properties-common python3.11-dev 
 
 RUN curl -O https://download.oracle.com/java/20/latest/jdk-20_linux-x64_bin.deb && \
+    apt-get update && \
     apt-get install -y -f libasound2 libc6-i386 libc6-x32 libxi6 libxtst6 && \
     dpkg -i jdk-20_linux-x64_bin.deb && \
     rm jdk-20_linux-x64_bin.deb
