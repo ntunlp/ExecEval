@@ -19,10 +19,11 @@ RUN apt-get install -y mono-devel \
 RUN apt-get update && \
     apt-get install -y software-properties-common python3.11-dev 
 
-RUN curl -O https://download.oracle.com/java/19/latest/jdk-19_linux-x64_bin.deb && \
+RUN curl -O https://download.oracle.com/java/20/latest/jdk-20_linux-x64_bin.deb && \
+    apt-get update && \
     apt-get install -y -f libasound2 libc6-i386 libc6-x32 libxi6 libxtst6 && \
-    dpkg -i jdk-19_linux-x64_bin.deb && \
-    rm jdk-19_linux-x64_bin.deb
+    dpkg -i jdk-20_linux-x64_bin.deb && \
+    rm jdk-20_linux-x64_bin.deb
 
 RUN curl -OL https://github.com/JetBrains/kotlin/releases/download/v1.7.20/kotlin-compiler-1.7.20.zip
 RUN unzip kotlin-compiler-1.7.20.zip -d /usr/local && \
@@ -63,9 +64,9 @@ ENV PATH $PATH:/usr/local/go/bin:/usr/local/kotlinc/bin:/usr/local/node-v16.17.1
 
 WORKDIR /root
 
-RUN update-alternatives --install /usr/bin/java java /usr/lib/jvm/jdk-19/bin/java 100 && \
-    update-alternatives --install /usr/bin/javac javac /usr/lib/jvm/jdk-19/bin/javac 100 && \
-    update-alternatives --install /usr/bin/jar jar /usr/lib/jvm/jdk-19/bin/jar 100 && \
+RUN update-alternatives --install /usr/bin/java java /usr/lib/jvm/jdk-20/bin/java 100 && \
+    update-alternatives --install /usr/bin/javac javac /usr/lib/jvm/jdk-20/bin/javac 100 && \
+    update-alternatives --install /usr/bin/jar jar /usr/lib/jvm/jdk-20/bin/jar 100 && \
     update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-12 100 && \
     update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-12 100 && \
     update-alternatives --install /usr/bin/python python /usr/bin/python3.11 100 && \
