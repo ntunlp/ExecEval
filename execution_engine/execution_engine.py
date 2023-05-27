@@ -263,6 +263,9 @@ class ExecutionEngine:
                         exec_outcome = ExecOutcome.MEMORY_LIMIT_EXCEEDED
                         if outs is not None:
                             result = outs.decode(errors="ignore").strip()
+                        elif errs is not None:
+                            result = errs.decode(errors="ignore").strip()
+                        self.logger.debug("**************** MEMORY_LIMIT_EXCEEDED assigned but no stdout or stderr")
             new_test_cases[key].update_result(result)
             new_test_cases[key].update_exec_outcome(exec_outcome)
             if job.stop_on_first_fail and exec_outcome is not ExecOutcome.PASSED:
