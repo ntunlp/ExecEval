@@ -185,7 +185,6 @@ class ExecutionEngine:
 
         # executor = f"timeout -k {limits.cpu} -s 9 {limits.cpu * timelimit_factor + 0.5} {get_prlimit_str(limits)} {executor}"
         executor = f"{get_prlimit_str(limits)} {executor}"
-
         new_test_cases = job.unittests.copy()
         self.logger.debug(
             f"Execute with gid={self.run_gid}, uid={self.run_uid}: {executor}"

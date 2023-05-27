@@ -13,7 +13,7 @@ class JobData:
     compile_flags: str | None = None
     execute_cmd: str | None = None
     execute_flags: str | None = None
-    limits: ResourceLimits = field(default_factory=ResourceLimits)
+    limits: ResourceLimits | None = None
     block_network: bool = True
     stop_on_first_fail: bool = True
     use_sanitizer: bool = False
@@ -28,7 +28,7 @@ class JobData:
             compile_flags=form.get("compile_flags"),
             execute_cmd=form.get("execute_cmd"),
             execute_flags=form.get("execute_flags"),
-            limits=ResourceLimits(**form.get("limits", {})),
+            limits=ResourceLimits(**form.get("limits")) if form.get("limits") is not None else None,
             block_network=form.get("block_network", True),
             stop_on_first_fail=form.get("stop_on_first_fail", True),
             use_sanitizer=form.get("use_sanitizer", False),
