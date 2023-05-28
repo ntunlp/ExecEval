@@ -99,13 +99,16 @@ Python 3 + libs:
     nofile: 4
 
 JavaScript:
-    nofile: 4
+    nofile: 25
+    nproc: 25
 
 Node js:
-    nofile: 4
+    nofile: 25
+    nproc: 25
 
 Node.js:
-    nofile: 4
+    nofile: 25
+    nproc: 25
 
 Rust:
     nofile: 4
@@ -120,28 +123,28 @@ Rust 2015:
     nofile: 4
 
 Java 6:
-    nofile: 10
-    _as: -1
+    nofile: 25
+    nproc: 23
 
 Java 7:
-    nofile: 10
-    _as: -1
+    nofile: 25
+    nproc: 23
 
 Java 1.5:
-    nofile: 10
-    _as: -1
+    nofile: 25
+    nproc: 23
 
 Java 8:
-    nofile: 10
-    _as: -1
+    nofile: 25
+    nproc: 23
 
 Java 11:
-    nofile: 10
-    _as: -1
+    nofile: 25
+    nproc: 23
 
 Java 17:
-    nofile: 10
-    _as: -1
+    nofile: 25
+    nproc: 23
 
 PHP:
     nofile: 4
@@ -160,26 +163,21 @@ Ruby 3:
     nofile: 10
 
 Kotlin:
-    nofile: 7
+    nofile: 25
     nproc: 23
-    _as: -1
 
 Kotlin 1.4:
-    nofile: 7
+    nofile: 25
     nproc: 23
-    _as: -1
 
 Kotlin 1.5:
-    nofile: 7
+    nofile: 25
     nproc: 23
-    _as: -1
 
 Kotlin 1.6:
-    nofile: 7
+    nofile: 25
     nproc: 23
-    _as: -1
 
 Kotlin 1.7:
-    nofile: 7
+    nofile: 25
     nproc: 23
-    _as: -1
