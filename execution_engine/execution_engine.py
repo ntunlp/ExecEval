@@ -16,6 +16,7 @@ from prlimit import get_prlimit_str
 from resource_limit import ResourceLimits
 from runtime import Runtime
 from seccomp_filter import make_filter
+from settings import JavaClassNotFoundError
 
 
 class CompilationError(Exception):
@@ -79,7 +80,7 @@ class ExecutionEngine:
         logger,
     ) -> None:
         self.code_store = CodeStore(cfg.code_store, run_ids)
-        self.supported_languages = dict()
+        self.supported_languages: dict[str, Runtime] = dict()
         self.output_validator = init_validate_outputs()
         for lang, sup_cfg in cfg.supported_languages.items():
             self.supported_languages[lang] = Runtime(sup_cfg)
@@ -130,7 +131,7 @@ class ExecutionEngine:
 
         return cp.stderr.decode(errors="ignore"), True
 
-    def get_executor(self, job: JobData) -> tuple[str | Path | LanguageError, int]:
+    def get_executor(self, job: JobData, limits: ResourceLimits) -> tuple[str | Path | LanguageError, int]:
         language = job.language
         if language is None:
             return LanguageError("Language must be selected to execute a code."), -1
@@ -144,6 +145,8 @@ class ExecutionEngine:
             source_code = self.supported_languages[language].sanitize(source_code)
 
         source_path = self.supported_languages[language].get_file_path(source_code)
+        if isinstance(source_path, JavaClassNotFoundError):
+            return source_path, -1
         source_path = self.code_store.write_source_code(source_code, source_path)
 
         executable, err = self._get_executable_after_compile(
@@ -153,21 +156,34 @@ class ExecutionEngine:
         if err:
             return executable, -1
 
+        execute_flags = job.execute_flags
+        
+        if self.supported_languages[language].extend_mem_for_vm:
+            if limits._as != -1:
+                if execute_flags is None:
+                    execute_flags = f" -{self.supported_languages[language].extend_mem_flag_name}{limits._as} "
+                else:
+                    execute_flags += f" -{self.supported_languages[language].extend_mem_flag_name}{limits._as} "
+
         return (
             self.supported_languages[language].execute(
-                executable, cmd=job.execute_cmd, flags=job.execute_flags
+                executable, cmd=job.execute_cmd, flags=execute_flags
             ),
             self.supported_languages[language].timelimit_factor,
         )
 
     def check_output_match(self, job: JobData) -> list[ExtendedUnittest]:
         limits = job.limits
-        executor, timelimit_factor = self.get_executor(job)
+        if limits is None:
+            limits = ResourceLimits()
+            limits.update(self.limits_by_lang[job.language])
+            
+        executor, timelimit_factor = self.get_executor(job, limits)
         # raise CompilationError(e.args, e)
         if timelimit_factor == -1:
             result = executor
-            if isinstance(executor, LanguageError):
-                result = executor.error
+            if isinstance(executor, (LanguageError, JavaClassNotFoundError)):
+                result = executor.msg
             elif not isinstance(result, str):
                 result = "Some bug in ExecEval, please do report."
             return [
@@ -179,10 +195,9 @@ class ExecutionEngine:
                 )
             ]
 
-        if limits is None:
-            limits = ResourceLimits()
-            limits.update(self.limits_by_lang[job.language])
-
+        # if language uses vm then add extra 1gb smemory for the parent vm program to run
+        if self.supported_languages[job.language].extend_mem_for_vm and limits._as != -1:
+            limits._as += 2**30
         # executor = f"timeout -k {limits.cpu} -s 9 {limits.cpu * timelimit_factor + 0.5} {get_prlimit_str(limits)} {executor}"
         executor = f"{get_prlimit_str(limits)} {executor}"
         new_test_cases = job.unittests.copy()
@@ -265,7 +280,8 @@ class ExecutionEngine:
                             result = outs.decode(errors="ignore").strip()
                         elif errs is not None:
                             result = errs.decode(errors="ignore").strip()
-                        self.logger.debug("**************** MEMORY_LIMIT_EXCEEDED assigned but no stdout or stderr")
+                        else:
+                            self.logger.debug("**************** MEMORY_LIMIT_EXCEEDED assigned but no stdout or stderr")
             new_test_cases[key].update_result(result)
             new_test_cases[key].update_exec_outcome(exec_outcome)
             if job.stop_on_first_fail and exec_outcome is not ExecOutcome.PASSED:
