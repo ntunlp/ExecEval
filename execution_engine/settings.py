@@ -81,8 +81,8 @@ generic_java_compile = lambda s, cmd, flags: (
 )
 
 generic_kt_compile = lambda s, cmd, flags: (
-    f"{cmd} {flags} -d {s.parent} {s.name}",
-    s.parent / f"{s.stem[0].capitalize()}{s.stem[1:]}Kt",
+    f"{cmd} {flags} -d {s.parent}/test.jar {str(s)}",
+    s.parent / "test.jar",
 )
 
 generic_interpreted_compile = lambda s, cmd, flags: (f"{cmd} {flags} {s.name}", s)
@@ -94,9 +94,10 @@ generic_rust_go_compile = lambda s, cmd, flags: (
 
 
 class JavaClassNotFoundError(Exception):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
+    msg: str
+    def __init__(self, msg, *args, **kwargs):
+        super().__init__(msg, *args, **kwargs)
+        self.msg = msg
 
 def init_java_file_name_suffix():
     _java_class_pattern = re.compile(r"public.* class (\w+)(.|\n|\r\n)*{", re.MULTILINE)
@@ -104,7 +105,7 @@ def init_java_file_name_suffix():
     def _java_file_name_suffix(source_code: str) -> str:
         result = _java_class_pattern.search(source_code)
         if result is None:
-            raise JavaClassNotFoundError()
+            return JavaClassNotFoundError("Failed to parse class name from:\n" + source_code)
 
         return result.group(1).strip() + ".java"
 
@@ -117,6 +118,10 @@ generic_binary_execute = lambda x, _, __: str(x)
 
 generic_interpreted_execute = lambda x, cmd, flags: f"{cmd} {flags} {x}"
 
-generic_java_kotlin_execute = (
+generic_java_execute = (
     lambda x, cmd, flags: f"{cmd} {flags} -cp {x.parent} {x.stem}"
+)
+
+generic_kotlin_execute = (
+    lambda x, cmd, flags: f"{cmd} {flags} {str(x)}"
 )
