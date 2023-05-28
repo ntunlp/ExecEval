@@ -3,6 +3,14 @@ from unittest import ExtendedUnittest
 
 from resource_limit import ResourceLimits
 
+def fix_uts(uts):
+	uts_fx = []
+	for ut in uts:
+		uts_fx.append({
+			"input": ut["input"],
+			"output": ut["output"],
+		})
+	return uts_fx
 
 @dataclass
 class JobData:
@@ -23,7 +31,7 @@ class JobData:
         return cls(
             language=form.get("language"),
             source_code=form.get("source_code"),
-            unittests=[ExtendedUnittest(**t) for t in form.get("unittests")],
+            unittests=[ExtendedUnittest(**t) for t in fix_uts(form.get("unittests"))],
             compile_cmd=form.get("compile_cmd"),
             compile_flags=form.get("compile_flags"),
             execute_cmd=form.get("execute_cmd"),
@@ -37,4 +45,4 @@ class JobData:
 
 @dataclass
 class LanguageError:
-    error: str
+    msg: str
