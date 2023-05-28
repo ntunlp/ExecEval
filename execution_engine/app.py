@@ -65,7 +65,7 @@ def run_job():
             for r in result
             if not (r.exec_outcome is None or r.exec_outcome is ExecOutcome.PASSED)
         ] + [ExecOutcome.PASSED]
-        log = f"{log} time: {(time.perf_counter_ns()-st)/(1000_000_000)}s, |tcs|={len(job.unittests)}, exec_outcome={exec_outcomes[0]}"
+        log = f"{log} time: {(time.perf_counter_ns()-st)/(1000_000_000)}s, |uts|={len(job.unittests)}, exec_outcome={exec_outcomes[0]}"
 
     except Exception as e:
         ret = {"error": str(e) + f"\n{traceback.print_exc()}"}, 400
