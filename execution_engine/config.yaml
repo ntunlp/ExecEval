@@ -317,9 +317,11 @@ supported_languages:
         execute_cmd: java
         execute_flags: -DONLINE_JUDGE=true -Xmx2g -XX:ReservedCodeCacheSize=64m -XX:-UseCompressedClassPointers -Xss256k
         compile_fn_name: generic_java_compile
-        execute_fn_name: generic_java_kotlin_execute
+        execute_fn_name: generic_java_execute
         file_name_fn_or_str_name: java_file_name_suffix
         timelimit_factor: 3
+        extend_mem_for_vm: true
+        extend_mem_flag_name: Xmx
 
     Java 7:
         compile_cmd: javac
@@ -327,9 +329,11 @@ supported_languages:
         execute_cmd: java
         execute_flags: -DONLINE_JUDGE=true -Xmx2g -XX:ReservedCodeCacheSize=64m -XX:-UseCompressedClassPointers -Xss256k
         compile_fn_name: generic_java_compile
-        execute_fn_name: generic_java_kotlin_execute
+        execute_fn_name: generic_java_execute
         file_name_fn_or_str_name: java_file_name_suffix
         timelimit_factor: 3
+        extend_mem_for_vm: true
+        extend_mem_flag_name: Xmx
 
     Java 1.5:
         compile_cmd: javac
@@ -337,9 +341,11 @@ supported_languages:
         execute_cmd: java
         execute_flags: -DONLINE_JUDGE=true -Xmx2g -XX:ReservedCodeCacheSize=64m -XX:-UseCompressedClassPointers -Xss256k
         compile_fn_name: generic_java_compile
-        execute_fn_name: generic_java_kotlin_execute
+        execute_fn_name: generic_java_execute
         file_name_fn_or_str_name: java_file_name_suffix
         timelimit_factor: 3
+        extend_mem_for_vm: true
+        extend_mem_flag_name: Xmx
 
     Java 8:
         compile_cmd: javac
@@ -347,9 +353,11 @@ supported_languages:
         execute_cmd: java
         execute_flags: -DONLINE_JUDGE=true -Xmx2g -XX:ReservedCodeCacheSize=64m -XX:-UseCompressedClassPointers -Xss256k
         compile_fn_name: generic_java_compile
-        execute_fn_name: generic_java_kotlin_execute
+        execute_fn_name: generic_java_execute
         file_name_fn_or_str_name: java_file_name_suffix
         timelimit_factor: 3
+        extend_mem_for_vm: true
+        extend_mem_flag_name: Xmx
 
     Java 11:
         compile_cmd: javac
@@ -357,9 +365,11 @@ supported_languages:
         execute_cmd: java
         execute_flags: -DONLINE_JUDGE=true -Xmx2g -XX:ReservedCodeCacheSize=64m -XX:-UseCompressedClassPointers -Xss256k
         compile_fn_name: generic_java_compile
-        execute_fn_name: generic_java_kotlin_execute
+        execute_fn_name: generic_java_execute
         file_name_fn_or_str_name: java_file_name_suffix
         timelimit_factor: 3
+        extend_mem_for_vm: true
+        extend_mem_flag_name: Xmx
 
     Java 17:
         compile_cmd: javac
@@ -367,9 +377,11 @@ supported_languages:
         execute_cmd: java
         execute_flags: -DONLINE_JUDGE=true -Xmx2g -XX:ReservedCodeCacheSize=64m -XX:-UseCompressedClassPointers -Xss256k
         compile_fn_name: generic_java_compile
-        execute_fn_name: generic_java_kotlin_execute
+        execute_fn_name: generic_java_execute
         file_name_fn_or_str_name: java_file_name_suffix
         timelimit_factor: 3
+        extend_mem_for_vm: true
+        extend_mem_flag_name: Xmx
 
     PHP:
         compile_cmd: php
@@ -415,55 +427,65 @@ supported_languages:
 
     Kotlin:
         compile_cmd: kotlinc
-        compile_flags: -nowarn -language-version 1.7
-        execute_cmd: kotlin
-        execute_flags: -DONLINE_JUDGE=true -Xmx2g -XX:ReservedCodeCacheSize=64m -XX:-UseCompressedClassPointers -Xss256k
+        compile_flags: -nowarn -language-version 1.7 -include-runtime 
+        execute_cmd: java
+        execute_flags: -DONLINE_JUDGE=true -Xmx2g -XX:ReservedCodeCacheSize=64m -XX:-UseCompressedClassPointers -Xss256k -jar 
         sanitize_fn_name: sanitize_kotlin
         compile_fn_name: generic_kt_compile
-        execute_fn_name: generic_java_kotlin_execute
+        execute_fn_name: generic_kotlin_execute
         file_name_fn_or_str_name: test.kt
         timelimit_factor: 3
+        extend_mem_for_vm: true
+        extend_mem_flag_name: Xmx
 
     Kotlin 1.4:
         compile_cmd: kotlinc
-        compile_flags: -nowarn -language-version 1.4
-        execute_cmd: kotlin
-        execute_flags: -DONLINE_JUDGE=true -Xmx2g -XX:ReservedCodeCacheSize=64m -XX:-UseCompressedClassPointers -Xss256k
+        compile_flags: -nowarn -language-version 1.4 -include-runtime 
+        execute_cmd: java
+        execute_flags: -DONLINE_JUDGE=true -Xmx2g -XX:ReservedCodeCacheSize=64m -XX:-UseCompressedClassPointers -Xss256k -jar 
         sanitize_fn_name: sanitize_kotlin
         compile_fn_name: generic_kt_compile
-        execute_fn_name: generic_java_kotlin_execute
+        execute_fn_name: generic_kotlin_execute
         file_name_fn_or_str_name: test.kt
         timelimit_factor: 3
+        extend_mem_for_vm: true
+        extend_mem_flag_name: Xmx
 
     Kotlin 1.5:
         compile_cmd: kotlinc
-        compile_flags: -nowarn -language-version 1.5
-        execute_cmd: kotlin
-        execute_flags: -DONLINE_JUDGE=true -Xmx2g -XX:ReservedCodeCacheSize=64m -XX:-UseCompressedClassPointers -Xss256k
+        compile_flags: -nowarn -language-version 1.5 -include-runtime 
+        execute_cmd: java
+        execute_flags: -DONLINE_JUDGE=true -Xmx2g -XX:ReservedCodeCacheSize=64m -XX:-UseCompressedClassPointers -Xss256k -jar
         sanitize_fn_name: sanitize_kotlin
         compile_fn_name: generic_kt_compile
-        execute_fn_name: generic_java_kotlin_execute
+        execute_fn_name: generic_kotlin_execute
         file_name_fn_or_str_name: test.kt
         timelimit_factor: 3
+        extend_mem_for_vm: true
+        extend_mem_flag_name: Xmx
 
     Kotlin 1.6:
         compile_cmd: kotlinc
-        compile_flags: -nowarn -language-version 1.6
-        execute_cmd: kotlin
-        execute_flags: -DONLINE_JUDGE=true -Xmx2g -XX:ReservedCodeCacheSize=64m -XX:-UseCompressedClassPointers -Xss256k
+        compile_flags: -nowarn -language-version 1.6 -include-runtime 
+        execute_cmd: java
+        execute_flags: -DONLINE_JUDGE=true -Xmx2g -XX:ReservedCodeCacheSize=64m -XX:-UseCompressedClassPointers -Xss256k -jar 
         sanitize_fn_name: sanitize_kotlin
         compile_fn_name: generic_kt_compile
-        execute_fn_name: generic_java_kotlin_execute
+        execute_fn_name: generic_kotlin_execute
         file_name_fn_or_str_name: test.kt
         timelimit_factor: 3
+        extend_mem_for_vm: true
+        extend_mem_flag_name: Xmx
 
     Kotlin 1.7:
         compile_cmd: kotlinc
-        compile_flags: -nowarn -language-version 1.7
-        execute_cmd: kotlin
-        execute_flags: -DONLINE_JUDGE=true -Xmx2g -XX:ReservedCodeCacheSize=64m -XX:-UseCompressedClassPointers -Xss256k
+        compile_flags: -nowarn -language-version 1.7 -include-runtime 
+        execute_cmd: java
+        execute_flags: -DONLINE_JUDGE=true -Xmx2g -XX:ReservedCodeCacheSize=64m -XX:-UseCompressedClassPointers -Xss256k -jar 
         sanitize_fn_name: sanitize_kotlin
         compile_fn_name: generic_kt_compile
-        execute_fn_name: generic_java_kotlin_execute
+        execute_fn_name: generic_kotlin_execute
         file_name_fn_or_str_name: test.kt
         timelimit_factor: 3
+        extend_mem_for_vm: true
+        extend_mem_flag_name: Xmx
