@@ -11,5 +11,5 @@ gunicorn \
     -w ${NUM_WORKERS} \
     --bind 0.0.0.0:${GUNICORN_PORT} \
     --timeout 0 \
-    --log-level info \
+    --log-level ${LOG_LEVEL} \
     "wsgi:app"

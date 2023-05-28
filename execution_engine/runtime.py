@@ -16,6 +16,8 @@ class Runtime:
     _compile: Callable[[Path, str, str], tuple[str | None, Path]] | None
     _execute: Callable[[Path, str, str], str]
     timelimit_factor: int = 1
+    extend_mem_for_vm: bool = False
+    extend_mem_flag_name: str = ""
 
     def __init__(self, cfg: LanguageConfig):
         self.language = cfg.language
@@ -30,6 +32,8 @@ class Runtime:
         self.sanitize = getattr(settings, cfg.sanitize_fn_name, None)
         self._compile = getattr(settings, cfg.compile_fn_name, None)
         self._execute = getattr(settings, cfg.execute_fn_name, lambda _, __, ___: "")
+        self.extend_mem_for_vm = cfg.extend_mem_for_vm
+        self.extend_mem_flag_name = cfg.extend_mem_flag_name
 
     @property
     def is_compiled_language(self):
@@ -51,11 +55,16 @@ class Runtime:
             has_sanitizer=self.has_sanitizer,
         )
 
-    def get_file_path(self, source_code: str) -> Path:
+    def get_file_path(self, source_code: str) -> Path | settings.JavaClassNotFoundError:
         if isinstance(self.file_name, str):
             return Path(self.file_name)
 
-        return Path(self.file_name(source_code))
+        file_name = self.file_name(source_code)
+        
+        if isinstance(file_name, settings.JavaClassNotFoundError):
+            return file_name
+
+        return Path(file_name)
 
     def compile(
         self,
@@ -69,7 +78,7 @@ class Runtime:
         return self._compile(
             source_code_path,
             self.compile_cmd if cmd is None else cmd,
-            self.compile_flags if flags is None else flags,
+            ("" if self.compile_flags is None else self.compile_flags) + " " + ("" if flags is None else flags),
         )
 
     def execute(
@@ -78,5 +87,5 @@ class Runtime:
         return self._execute(
             executable,
             self.execute_cmd if cmd is None else cmd,
-            self.execute_flags if flags is None else flags,
+            ("" if self.execute_flags is None else self.execute_flags) + " " + ("" if flags is None else flags),
         )

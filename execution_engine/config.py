@@ -27,6 +27,8 @@ class LanguageConfig:
     execute_fn_name: str = ""
     file_name_fn_or_str_name: str = ""
     timelimit_factor: int = 1
+    extend_mem_for_vm: bool = False
+    extend_mem_flag_name: str = ""
 
 
 @has_nested_dataclass
