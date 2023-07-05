@@ -315,7 +315,7 @@ supported_languages:
         compile_cmd: javac
         compile_flags: -target 1.6 -nowarn -cp ".;*"
         execute_cmd: java
-        execute_flags: -DONLINE_JUDGE=true -Xmx2g -XX:ReservedCodeCacheSize=64m -XX:-UseCompressedClassPointers -Xss256k
+        execute_flags: -DONLINE_JUDGE=true -Xlog:disable -Xmx2g -XX:ReservedCodeCacheSize=64m -XX:-UseCompressedClassPointers -Xss256k
         compile_fn_name: generic_java_compile
         execute_fn_name: generic_java_execute
         file_name_fn_or_str_name: java_file_name_suffix
@@ -327,7 +327,7 @@ supported_languages:
         compile_cmd: javac
         compile_flags: -target 1.7 -nowarn -cp ".;*"
         execute_cmd: java
-        execute_flags: -DONLINE_JUDGE=true -Xmx2g -XX:ReservedCodeCacheSize=64m -XX:-UseCompressedClassPointers -Xss256k
+        execute_flags: -DONLINE_JUDGE=true -Xlog:disable -Xmx2g -XX:ReservedCodeCacheSize=64m -XX:-UseCompressedClassPointers -Xss256k
         compile_fn_name: generic_java_compile
         execute_fn_name: generic_java_execute
         file_name_fn_or_str_name: java_file_name_suffix
@@ -339,7 +339,7 @@ supported_languages:
         compile_cmd: javac
         compile_flags: -target 1.5 -nowarn -cp ".;*"
         execute_cmd: java
-        execute_flags: -DONLINE_JUDGE=true -Xmx2g -XX:ReservedCodeCacheSize=64m -XX:-UseCompressedClassPointers -Xss256k
+        execute_flags: -DONLINE_JUDGE=true -Xlog:disable -Xmx2g -XX:ReservedCodeCacheSize=64m -XX:-UseCompressedClassPointers -Xss256k
         compile_fn_name: generic_java_compile
         execute_fn_name: generic_java_execute
         file_name_fn_or_str_name: java_file_name_suffix
@@ -351,7 +351,7 @@ supported_languages:
         compile_cmd: javac
         compile_flags: -nowarn -cp ".;*"
         execute_cmd: java
-        execute_flags: -DONLINE_JUDGE=true -Xmx2g -XX:ReservedCodeCacheSize=64m -XX:-UseCompressedClassPointers -Xss256k
+        execute_flags: -DONLINE_JUDGE=true -Xlog:disable -Xmx2g -XX:ReservedCodeCacheSize=64m -XX:-UseCompressedClassPointers -Xss256k
         compile_fn_name: generic_java_compile
         execute_fn_name: generic_java_execute
         file_name_fn_or_str_name: java_file_name_suffix
@@ -363,7 +363,7 @@ supported_languages:
         compile_cmd: javac
         compile_flags: -nowarn -cp ".;*"
         execute_cmd: java
-        execute_flags: -DONLINE_JUDGE=true -Xmx2g -XX:ReservedCodeCacheSize=64m -XX:-UseCompressedClassPointers -Xss256k
+        execute_flags: -DONLINE_JUDGE=true -Xlog:disable -Xmx2g -XX:ReservedCodeCacheSize=64m -XX:-UseCompressedClassPointers -Xss256k
         compile_fn_name: generic_java_compile
         execute_fn_name: generic_java_execute
         file_name_fn_or_str_name: java_file_name_suffix
@@ -375,7 +375,7 @@ supported_languages:
         compile_cmd: javac
         compile_flags: -nowarn -cp ".;*"
         execute_cmd: java
-        execute_flags: -DONLINE_JUDGE=true -Xmx2g -XX:ReservedCodeCacheSize=64m -XX:-UseCompressedClassPointers -Xss256k
+        execute_flags: -DONLINE_JUDGE=true -Xlog:disable -Xmx2g -XX:ReservedCodeCacheSize=64m -XX:-UseCompressedClassPointers -Xss256k
         compile_fn_name: generic_java_compile
         execute_fn_name: generic_java_execute
         file_name_fn_or_str_name: java_file_name_suffix
@@ -429,7 +429,7 @@ supported_languages:
         compile_cmd: kotlinc
         compile_flags: -nowarn -language-version 1.7 -include-runtime 
         execute_cmd: java
-        execute_flags: -DONLINE_JUDGE=true -Xmx2g -XX:ReservedCodeCacheSize=64m -XX:-UseCompressedClassPointers -Xss256k -jar 
+        execute_flags: -DONLINE_JUDGE=true -Xlog:disable -Xmx2g -XX:ReservedCodeCacheSize=64m -XX:-UseCompressedClassPointers -Xss256k -jar 
         sanitize_fn_name: sanitize_kotlin
         compile_fn_name: generic_kt_compile
         execute_fn_name: generic_kotlin_execute
@@ -442,7 +442,7 @@ supported_languages:
         compile_cmd: kotlinc
         compile_flags: -nowarn -language-version 1.4 -include-runtime 
         execute_cmd: java
-        execute_flags: -DONLINE_JUDGE=true -Xmx2g -XX:ReservedCodeCacheSize=64m -XX:-UseCompressedClassPointers -Xss256k -jar 
+        execute_flags: -DONLINE_JUDGE=true -Xlog:disable -Xmx2g -XX:ReservedCodeCacheSize=64m -XX:-UseCompressedClassPointers -Xss256k -jar 
         sanitize_fn_name: sanitize_kotlin
         compile_fn_name: generic_kt_compile
         execute_fn_name: generic_kotlin_execute
@@ -455,7 +455,7 @@ supported_languages:
         compile_cmd: kotlinc
         compile_flags: -nowarn -language-version 1.5 -include-runtime 
         execute_cmd: java
-        execute_flags: -DONLINE_JUDGE=true -Xmx2g -XX:ReservedCodeCacheSize=64m -XX:-UseCompressedClassPointers -Xss256k -jar
+        execute_flags: -DONLINE_JUDGE=true -Xlog:disable -Xmx2g -XX:ReservedCodeCacheSize=64m -XX:-UseCompressedClassPointers -Xss256k -jar
         sanitize_fn_name: sanitize_kotlin
         compile_fn_name: generic_kt_compile
         execute_fn_name: generic_kotlin_execute
@@ -468,7 +468,7 @@ supported_languages:
         compile_cmd: kotlinc
         compile_flags: -nowarn -language-version 1.6 -include-runtime 
         execute_cmd: java
-        execute_flags: -DONLINE_JUDGE=true -Xmx2g -XX:ReservedCodeCacheSize=64m -XX:-UseCompressedClassPointers -Xss256k -jar 
+        execute_flags: -DONLINE_JUDGE=true -Xlog:disable -Xmx2g -XX:ReservedCodeCacheSize=64m -XX:-UseCompressedClassPointers -Xss256k -jar 
         sanitize_fn_name: sanitize_kotlin
         compile_fn_name: generic_kt_compile
         execute_fn_name: generic_kotlin_execute
@@ -481,7 +481,7 @@ supported_languages:
         compile_cmd: kotlinc
         compile_flags: -nowarn -language-version 1.7 -include-runtime 
         execute_cmd: java
-        execute_flags: -DONLINE_JUDGE=true -Xmx2g -XX:ReservedCodeCacheSize=64m -XX:-UseCompressedClassPointers -Xss256k -jar 
+        execute_flags: -DONLINE_JUDGE=true -Xlog:disable -Xmx2g -XX:ReservedCodeCacheSize=64m -XX:-UseCompressedClassPointers -Xss256k -jar 
         sanitize_fn_name: sanitize_kotlin
         compile_fn_name: generic_kt_compile
         execute_fn_name: generic_kotlin_execute
