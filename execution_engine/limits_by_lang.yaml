@@ -154,7 +154,7 @@ PHP 8.1:
 
 Go:
     nofile: 0
-    nproc: 6
+    nproc: 7
 
 Ruby:
     nofile: 10
