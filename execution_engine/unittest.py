@@ -48,7 +48,7 @@ class ExtendedUnittest:
         return result in self.output
 
     def json(self):
-        _json = self.__dict__
+        _json = self.__dict__.copy()
         if self.exec_outcome is not None:
             _json["exec_outcome"] = self.exec_outcome.value
 
