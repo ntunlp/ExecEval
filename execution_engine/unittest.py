@@ -31,10 +31,16 @@ class ExtendedUnittest:
     output: list[str] = field(default_factory=list)
     result: str | None = None
     exec_outcome: ExecOutcome | None = None
+    time_consumed: float | None = None
+    peak_memory_consumed: str | None = None
 
     def __post_init__(self):
         self.input = convert_crlf_to_lf(self.input)
         self.output = [convert_crlf_to_lf(o) for o in self.output.copy()]
+
+    def update_time_mem(self, tc, mc):
+        self.time_consumed = tc
+        self.peak_memory_consumed = mc
 
     def update_result(self, result):
         self.result = result
