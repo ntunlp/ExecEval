@@ -14,7 +14,7 @@ This repository is a part of our ongoing effort to build large scale execution b
       primaryClass={cs.CL}
 }
 ```
-Part of this work was submitted as a requirement for the Master of Science degree in Computer Science and Applications at the Islamic University of Technology by Muhammad Abdullah Matin Khan Zarzis. (The thesis or project report will be added upon publication).
+Part of this work was submitted as a requirement for the Master of Science degree in Computer Science and Applications at the Islamic University of Technology by Muhammad Abdullah Matin Khan. (The thesis or project report will be added upon publication).
 
 ```
 @misc{khan2024xcodeeval,
