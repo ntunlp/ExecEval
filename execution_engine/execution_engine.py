@@ -3,7 +3,7 @@ import shlex
 import signal
 import subprocess
 from pathlib import Path
-from threading import Timer
+from threading import Timer, Thread
 from unittest import ExtendedUnittest
 
 import gmpy2
@@ -69,6 +69,31 @@ def init_validate_outputs():
         return True
 
     return validate_outputs
+
+class MonitorThread(Thread):
+    def __init__(self, proc):
+        Thread.__init__(self)
+        self.total_time = None
+        self.peak_memory = None
+        self.proc = proc
+        self.clk_tck = os.sysconf(os.sysconf_names['SC_CLK_TCK'])
+
+    def run(self):
+        while self.proc.poll() is None:
+            try:
+            # print(f"/proc/{self.proc.pid}/stat", os.path.exists(f"/proc/{self.proc.pid}/stat"))
+            # print(f"/proc/{self.proc.pid}/status", os.path.exists(f"/proc/{self.proc.pid}/status"))
+            # print(self.total_time, self.peak_memory)
+                with open(f"/proc/{self.proc.pid}/stat") as pid_stat:
+                    vals = pid_stat.read().split()
+                    self.total_time = (float(vals[13]) + float(vals[14]) + float(vals[15]) + float(vals[16])) / self.clk_tck # adding user time and sys time, also childs utime, stime
+                with open(f"/proc/{self.proc.pid}/status") as pid_status:
+                    vm_peak_line = [l for l in pid_status if l.startswith("VmPeak:")]
+                    if len(vm_peak_line) == 0: continue
+                    vm_peak_line = vm_peak_line[0]
+                    self.peak_memory = vm_peak_line.split(":")[-1].strip()
+            except (FileNotFoundError, ProcessLookupError):
+                pass
 
 
 class ExecutionEngine:
@@ -228,13 +253,15 @@ class ExecutionEngine:
                 env=self.exec_env,
                 start_new_session=True,
             ) as child_process:
-
+                monitor = MonitorThread(child_process)
+                monitor.start()
                 def handler():
                     if child_process.poll() is None:
                         child_process.kill()
 
                 timer = Timer(limits.cpu * timelimit_factor + 1, handler)
                 timer.start()
+                tot_time, peak_mem = None, None
                 # self.logger.debug(f"PID: {child_process.pid}")
                 try:
                     outs, errs = child_process.communicate(
@@ -249,9 +276,11 @@ class ExecutionEngine:
                         result = errs.decode(errors="ignore").strip()
                 finally:
                     timer.cancel()
+                    
                     child_process.kill()
                     child_process.communicate()
                     child_process.wait()
+                    monitor.join()
                     if syscall_filter_loaded:
                         self.socket_filter.reset()
                 if exec_outcome is None:
@@ -282,6 +311,7 @@ class ExecutionEngine:
                             result = errs.decode(errors="ignore").strip()
                         else:
                             self.logger.debug("**************** MEMORY_LIMIT_EXCEEDED assigned but no stdout or stderr")
+            new_test_cases[key].update_time_mem(tot_time, peak_mem)
             new_test_cases[key].update_result(result)
             new_test_cases[key].update_exec_outcome(exec_outcome)
             if job.stop_on_first_fail and exec_outcome is not ExecOutcome.PASSED:
