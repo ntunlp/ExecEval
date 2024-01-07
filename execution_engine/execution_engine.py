@@ -70,26 +70,34 @@ def init_validate_outputs():
 
     return validate_outputs
 
+
 class MonitorThread(Thread):
     def __init__(self, proc):
         Thread.__init__(self)
         self.total_time = None
         self.peak_memory = None
         self.proc = proc
-        self.clk_tck = os.sysconf(os.sysconf_names['SC_CLK_TCK'])
+        self.clk_tck = os.sysconf(os.sysconf_names["SC_CLK_TCK"])
 
     def run(self):
         while self.proc.poll() is None:
-            try:
-            # print(f"/proc/{self.proc.pid}/stat", os.path.exists(f"/proc/{self.proc.pid}/stat"))
-            # print(f"/proc/{self.proc.pid}/status", os.path.exists(f"/proc/{self.proc.pid}/status"))
             # print(self.total_time, self.peak_memory)
+            try:
+                # print(f"/proc/{self.proc.pid}/stat", os.path.exists(f"/proc/{self.proc.pid}/stat"))
+                # print(f"/proc/{self.proc.pid}/status", os.path.exists(f"/proc/{self.proc.pid}/status"))
+                # print(self.total_time, self.peak_memory)
                 with open(f"/proc/{self.proc.pid}/stat") as pid_stat:
                     vals = pid_stat.read().split()
-                    self.total_time = (float(vals[13]) + float(vals[14]) + float(vals[15]) + float(vals[16])) / self.clk_tck # adding user time and sys time, also childs utime, stime
+                    self.total_time = (
+                        float(vals[13])
+                        + float(vals[14])
+                        + float(vals[15])
+                        + float(vals[16])
+                    ) / self.clk_tck  # adding user time and sys time, also childs utime, stime
                 with open(f"/proc/{self.proc.pid}/status") as pid_status:
                     vm_peak_line = [l for l in pid_status if l.startswith("VmPeak:")]
-                    if len(vm_peak_line) == 0: continue
+                    if len(vm_peak_line) == 0:
+                        continue
                     vm_peak_line = vm_peak_line[0]
                     self.peak_memory = vm_peak_line.split(":")[-1].strip()
             except (FileNotFoundError, ProcessLookupError):
@@ -133,7 +141,7 @@ class ExecutionEngine:
             capture_output=True,
             cwd=self.code_store._source_dir,
             env=self.exec_env,
-            timeout=20,
+            timeout=60,
         )
 
     def _get_executable_after_compile(
@@ -149,14 +157,19 @@ class ExecutionEngine:
         compile_str, executable = self.supported_languages[lang].compile(
             source_file, cmd, flags
         )
+        try:
+            cp = self._compile(compile_str)
+        except subprocess.TimeoutExpired as e:
+            return f"{e}", True
 
-        cp = self._compile(compile_str)
         if cp.returncode == 0:
             return executable, False
 
         return cp.stderr.decode(errors="ignore"), True
 
-    def get_executor(self, job: JobData, limits: ResourceLimits) -> tuple[str | Path | LanguageError, int]:
+    def get_executor(
+        self, job: JobData, limits: ResourceLimits
+    ) -> tuple[str | Path | LanguageError, int]:
         language = job.language
         if language is None:
             return LanguageError("Language must be selected to execute a code."), -1
@@ -182,7 +195,7 @@ class ExecutionEngine:
             return executable, -1
 
         execute_flags = job.execute_flags
-        
+
         if self.supported_languages[language].extend_mem_for_vm:
             if limits._as != -1:
                 if execute_flags is None:
@@ -202,7 +215,7 @@ class ExecutionEngine:
         if limits is None:
             limits = ResourceLimits()
             limits.update(self.limits_by_lang[job.language])
-            
+
         executor, timelimit_factor = self.get_executor(job, limits)
         # raise CompilationError(e.args, e)
         if timelimit_factor == -1:
@@ -221,7 +234,10 @@ class ExecutionEngine:
             ]
 
         # if language uses vm then add extra 1gb smemory for the parent vm program to run
-        if self.supported_languages[job.language].extend_mem_for_vm and limits._as != -1:
+        if (
+            self.supported_languages[job.language].extend_mem_for_vm
+            and limits._as != -1
+        ):
             limits._as += 2**30
         # executor = f"timeout -k {limits.cpu} -s 9 {limits.cpu * timelimit_factor + 0.5} {get_prlimit_str(limits)} {executor}"
         executor = f"{get_prlimit_str(limits)} {executor}"
@@ -255,6 +271,7 @@ class ExecutionEngine:
             ) as child_process:
                 monitor = MonitorThread(child_process)
                 monitor.start()
+
                 def handler():
                     if child_process.poll() is None:
                         child_process.kill()
@@ -276,7 +293,7 @@ class ExecutionEngine:
                         result = errs.decode(errors="ignore").strip()
                 finally:
                     timer.cancel()
-                    
+
                     child_process.kill()
                     child_process.communicate()
                     child_process.wait()
@@ -297,7 +314,12 @@ class ExecutionEngine:
                     elif errs is not None and len(errs) != 0:
                         exec_outcome = ExecOutcome.RUNTIME_ERROR
                         errs = errs.decode(errors="ignore")
-                        if "out of memory" in errs.lower():
+                        if (
+                            "out of memory" in errs.lower()
+                            or "bad_alloc" in errs.lower()
+                            or "bad alloc" in errs.lower()
+                            or "memoryerror" in errs.lower()
+                        ):
                             exec_outcome = ExecOutcome.MEMORY_LIMIT_EXCEEDED
                         if child_process.returncode > 0:
                             result = errs
@@ -310,8 +332,10 @@ class ExecutionEngine:
                         elif errs is not None:
                             result = errs.decode(errors="ignore").strip()
                         else:
-                            self.logger.debug("**************** MEMORY_LIMIT_EXCEEDED assigned but no stdout or stderr")
-            new_test_cases[key].update_time_mem(tot_time, peak_mem)
+                            self.logger.debug(
+                                "**************** MEMORY_LIMIT_EXCEEDED assigned but no stdout or stderr"
+                            )
+            new_test_cases[key].update_time_mem(monitor.total_time, monitor.peak_memory)
             new_test_cases[key].update_result(result)
             new_test_cases[key].update_exec_outcome(exec_outcome)
             if job.stop_on_first_fail and exec_outcome is not ExecOutcome.PASSED:

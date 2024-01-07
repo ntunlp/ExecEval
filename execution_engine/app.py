@@ -65,7 +65,9 @@ def run_job():
             for r in result
             if not (r.exec_outcome is None or r.exec_outcome is ExecOutcome.PASSED)
         ] + [ExecOutcome.PASSED]
-        log = f"{log} time: {(time.perf_counter_ns()-st)/(1000_000_000)}s, |uts|={len(job.unittests)}, exec_outcome={exec_outcomes[0].value}"
+        peak_mem = max(r['peak_memory_consumed'] for r in result)
+        peak_time = max(r['time_consumed'] for r in result)
+        log = f"{log} time: {(time.perf_counter_ns()-st)/(1000_000_000)}s, |uts|={len(job.unittests)}, exec_outcome={exec_outcomes[0].value}, peak_mem={peak_mem}, peak_time={peak_time}"
 
     except Exception as e:
         ret = {"error": str(e) + f"\n{traceback.print_exc()}"}, 400
