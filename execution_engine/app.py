@@ -57,7 +57,7 @@ def run_job():
     log, ret, st = "", None, time.perf_counter_ns()
     try:
         job = JobData.json_parser(request.json)
-        log = f"api/execute_code: Executing for {job.language}"
+        log = f"api/execute_code: lang={job.language}"
         result = execution_engine.check_output_match(job)
         ret = {"data": [r.json() for r in result]}
         exec_outcomes = [
@@ -65,7 +65,9 @@ def run_job():
             for r in result
             if not (r.exec_outcome is None or r.exec_outcome is ExecOutcome.PASSED)
         ] + [ExecOutcome.PASSED]
-        log = f"{log} time: {(time.perf_counter_ns()-st)/(1000_000_000)}s, |uts|={len(job.unittests)}, exec_outcome={exec_outcomes[0].value}"
+        peak_mem = max([int(r.peak_memory_consumed.split()[0]) for r in result if r.peak_memory_consumed] + [-1])
+        peak_time = max([r.time_consumed for r in result if r.time_consumed] + [-1])
+        log = f"{log} time: {(time.perf_counter_ns()-st)/(1000_000_000)}s, |uts|={len(job.unittests)}, exec_outcome={exec_outcomes[0].value}, peak_mem={peak_mem}kB, peak_time={peak_time}s"
 
     except Exception as e:
         ret = {"error": str(e) + f"\n{traceback.print_exc()}"}, 400
