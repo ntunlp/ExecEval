@@ -64,9 +64,10 @@ ENV PATH $PATH:/usr/local/go/bin:/usr/local/kotlinc/bin:/usr/local/node-v16.17.1
 
 WORKDIR /root
 
-RUN update-alternatives --install /usr/bin/java java /usr/lib/jvm/jdk-21-oracle-x64/bin/java 100 && \
-    update-alternatives --install /usr/bin/javac javac /usr/lib/jvm/jdk-21-oracle-x64/bin/javac 100 && \
-    update-alternatives --install /usr/bin/jar jar /usr/lib/jvm/jdk-21-oracle-x64/bin/jar 100 && \
+
+RUN update-alternatives --install /usr/bin/java java /usr/lib/jvm/jdk-21.0.4-oracle-x64/bin/java 100 && \
+    update-alternatives --install /usr/bin/javac javac /usr/lib/jvm/jdk-21.0.4-oracle-x64/bin/javac 100 && \
+    update-alternatives --install /usr/bin/jar jar /usr/lib/jvm/jdk-21.0.4-oracle-x64/bin/jar 100 && \
     update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-12 100 && \
     update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-12 100 && \
     update-alternatives --install /usr/bin/python python /usr/bin/python3.11 100 && \
